@@ -1,4 +1,5 @@
 import {NativeModules, NativeEventEmitter} from 'react-native';
+import {UsbDevice, UsbDeviceModuleInterface} from "../types";
 
 const {UVCDeviceModule} = NativeModules;
 

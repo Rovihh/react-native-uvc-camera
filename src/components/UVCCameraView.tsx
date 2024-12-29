@@ -6,8 +6,9 @@ import {
     findNodeHandle,
     UIManager,
   } from 'react-native';
-  import React, {useCallback, useEffect, useRef, useState} from 'react';
-  import UsbDeviceModule from '../modules/UVCDeviceModule';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import UsbDeviceModule from '../modules/UVCDeviceModule';
+import {PermissionRequest, UVCCameraViewProps} from "../types";
 
   class PermissionRequestPool {
     private static instance: PermissionRequestPool;
@@ -54,16 +55,12 @@ import {
     }
   }
 
-  interface USBCameraProps extends ViewProps {
-    deviceId?: string;
-  }
-
   const ComponentName = 'UVCCameraView';
 
   const UVCCameraView = requireNativeComponent(ComponentName);
   const Commands = UIManager.getViewManagerConfig(ComponentName)?.Commands;
 
-  export const USBCamera: React.FC<USBCameraProps> = props => {
+  export const USBCamera: React.FC<UVCCameraViewProps> = props => {
     const {deviceId} = props;
     const viewRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);

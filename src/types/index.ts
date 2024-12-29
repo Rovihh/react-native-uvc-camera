@@ -1,26 +1,32 @@
+import {StyleProp, ViewProps, ViewStyle} from 'react-native';
+
+export interface UVCCameraViewProps extends ViewProps {
+  deviceId?: string;
+}
+
+export interface UVCDevice {
+  deviceId: string;
+  productId: string;
+  vendorId: string;
+  manufacturerName?: string;
+  productName?: string;
+}
+
 // 全局权限请求池
-interface PermissionRequest {
+export interface PermissionRequest {
   deviceId: number;
   resolve: (value: boolean) => void;
   reject: (error: any) => void;
 }
 
-interface UVCCameraViewProps {
-  deviceId?: string;
-  onConnected?: () => void;
-  onDisconnected?: () => void;
-  onFrame?: (event: any) => void;
-  style?: any;
-}
-
-interface UsbDevice {
+export interface UsbDevice {
   deviceId: number;
   deviceName: string;
   productId: number;
   vendorId: number;
 }
 
-interface UsbDeviceModuleInterface {
+export interface UsbDeviceModuleInterface {
   getDeviceList(): Promise<UsbDevice[]>;
   requestPermission(deviceId: number): Promise<boolean>;
   hasPermission(deviceId: number): Promise<boolean>;

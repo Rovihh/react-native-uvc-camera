@@ -1,6 +1,7 @@
+
 {
   "name": "@yz1311/react-native-uvc-camera",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -13,9 +14,11 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "publishConfig": {
-    "access": "public"
-  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "",
+  "license": "",
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
