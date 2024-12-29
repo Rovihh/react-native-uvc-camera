@@ -1,6 +1,5 @@
-
 {
-  "name": "react-native-uvc-camera",
+  "name": "@fe-free/react-native-uvc-camera",
   "version": "0.0.6",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,10 +14,16 @@
     "prepare": "npm run build"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "uvc",
+    "camera"
   ],
-  "author": "",
-  "license": "",
+  "author": "liyatang@qq.com",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
