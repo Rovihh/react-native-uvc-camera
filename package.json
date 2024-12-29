@@ -1,6 +1,6 @@
 
 {
-  "name": "@yz1311/react-native-uvc-camera",
+  "name": "react-native-uvc-camera",
   "version": "0.0.6",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
