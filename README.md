@@ -14,8 +14,9 @@
 > 如果你需要更多功能，请 fork 或者联系我们！
 
 使用
+
 ```tsx
-import {UVCCameraWithIndex} from '@fe-free/react-native-uvc-camera';
+import { UVCCameraWithIndex } from "@fe-free/react-native-uvc-camera";
 
 const Home = () => {
   return (
@@ -34,12 +35,11 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   cameraView: {
-    width: '100%',
+    width: "100%",
     height: 240,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
 });
-
 ```
 
 [什么是 UVC ?](https://baike.baidu.com/item/uvc/3809290)
@@ -58,15 +58,16 @@ const styles = StyleSheet.create({
 - https://github.com/mrousavy/react-native-vision-camera 只支持前后置摄像头
 - https://github.com/jiangdongguo/AndroidUSBCamera android 原生库。
 
-
 感谢
-- [@yz1311](https://github.com/yz1311) 
+
+- [@yz1311](https://github.com/yz1311)
 
 ## 联系和捐赠
 
-react-native 的生态不容易
+联系我
 
 <img src="https://raw.githubusercontent.com/frontend-free/react-native-uvc-camera/refs/heads/main/md_doc/wx.png" width="300">
 
-- 感谢 [@liyatang](https://github.com/liyatang) 提供的 UVC 相机支持
-- 感谢 [@liyatang](https://github.com/liyatang) 提供的 UVC 相机支持
+捐赠
+
+<img src="https://raw.githubusercontent.com/frontend-free/react-native-uvc-camera/refs/heads/main/md_doc/pay.png" width="300">
