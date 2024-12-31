@@ -5,7 +5,6 @@ import {
   findNodeHandle,
   UIManager,
   StyleSheet,
-  ToastAndroid,
 } from "react-native";
 import React, {
   useCallback,
@@ -45,7 +44,6 @@ const BaseUVCCamera = ({ deviceId }: { deviceId: number }) => {
         const node = findNodeHandle(cameraViewRef.current);
         if (node) {
           console.log("setDeviceId", deviceId);
-          ToastAndroid.show("连接" + deviceId, ToastAndroid.SHORT);
           UIManager.dispatchViewManagerCommand(node, Commands.setDeviceId, [
             deviceId,
           ]);
@@ -63,19 +61,23 @@ const BaseUVCCamera = ({ deviceId }: { deviceId: number }) => {
   useEffect(() => {
     console.log("state", state);
 
-    // 只要是没有链接，就重新链接。
-    // 比如 一开始 和 attached 后，需要重新链接
-    if (state === "" || state === "attached") {
-      doConnect();
-    }
-    // 比如 disconnected 后，需要重新链接
-    else if (state === "disconnected") {
-      doConnect();
-    }
-    // 比如 permissionDenied 后，需要重新链接
-    else if (state === "permissionDenied") {
-      doConnect();
-    }
+    // 问题：切页面后重新回来就不显示了。
+    // 方案：每次都 connect 能解决，不清楚为什么。
+    doConnect();
+
+    // // 只要是没有链接，就重新链接。
+    // // 比如 一开始 和 attached 后，需要重新链接
+    // if (state === "" || state === "attached") {
+    //   doConnect();
+    // }
+    // // 比如 disconnected 后，需要重新链接
+    // else if (state === "disconnected") {
+    //   doConnect();
+    // }
+    // // 比如 permissionDenied 后，需要重新链接
+    // else if (state === "permissionDenied") {
+    //   doConnect();
+    // }
   }, [state, doConnect]);
 
   // 获取预览大小
