@@ -1,6 +1,6 @@
-import {useState, useEffect, useCallback, useMemo} from 'react';
-import {UVCDeviceModule} from './uvc_device_module';
-import {UVCDevice} from './uvc_device_module';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { UVCDeviceModule } from "./uvc_device_module";
+import { UVCDevice } from "./uvc_device_module";
 
 /** 任务调度 */
 class TaskQueue {
@@ -18,7 +18,7 @@ class TaskQueue {
 
   addTask(task: () => Promise<any>) {
     return new Promise((resolve, reject) => {
-      this.queue.push({task, resolve, reject});
+      this.queue.push({ task, resolve, reject });
       this.runNext();
     });
   }
@@ -30,7 +30,7 @@ class TaskQueue {
 
     this.running = true;
 
-    const {task, resolve, reject} = this.queue.shift()!;
+    const { task, resolve, reject } = this.queue.shift()!;
 
     task()
       .then(resolve)
@@ -52,20 +52,20 @@ function useDevices() {
       const list = await UVCDeviceModule.getDeviceList();
       setDevices(list);
     } catch (error) {
-      console.error('Failed to get device list:', error);
+      console.error("Failed to get device list:", error);
     }
   }, []);
 
   useEffect(() => {
     getDevices();
 
-    const attached = UVCDeviceModule.onDeviceAttached(device => {
-      console.log('device attached:', device);
+    const attached = UVCDeviceModule.onDeviceAttached((device) => {
+      console.log("useDevices device attached:", device);
       getDevices();
     });
 
-    const detached = UVCDeviceModule.onDeviceDetached(device => {
-      console.log('device detached:', device);
+    const detached = UVCDeviceModule.onDeviceDetached((device) => {
+      console.log("useDevices device detached:", device);
       getDevices();
     });
 
@@ -80,7 +80,7 @@ function useDevices() {
     return devices.sort((a, b) => a.deviceId - b.deviceId);
   }, [devices]);
 
-  return {devices: sortedDevices};
+  return { devices: sortedDevices };
 }
 
 /** 设备事件监听 */
@@ -101,40 +101,51 @@ function useDeviceEvent(params: {
     onDisconnected,
     onPermissionDenied,
   } = params;
-  const [state, setState] = useState<string>('');
+  const [state, setState] = useState<
+    | "attached"
+    | "detached"
+    | "connected"
+    | "disconnected"
+    | "permissionDenied"
+    | ""
+  >("");
 
   useEffect(() => {
     // 设备插入事件
-    const attached = UVCDeviceModule.onDeviceAttached(async device => {
+    const attached = UVCDeviceModule.onDeviceAttached(async (device) => {
+      console.log("useDeviceEvent device attached:", device, deviceId);
       if (device.deviceId === deviceId) {
-        setState('attached');
+        setState("attached");
 
         onAttached?.();
       }
     });
 
     // 设备断开事件
-    const detached = UVCDeviceModule.onDeviceDetached(device => {
+    const detached = UVCDeviceModule.onDeviceDetached((device) => {
+      console.log("useDeviceEvent device detached:", device, deviceId);
       if (device.deviceId === deviceId) {
-        setState('detached');
+        setState("detached");
 
         onDetached?.();
       }
     });
 
     // 设备连接事件
-    const connected = UVCDeviceModule.onDeviceConnected(device => {
+    const connected = UVCDeviceModule.onDeviceConnected((device) => {
+      console.log("useDeviceEvent device connected:", device, deviceId);
       if (device.deviceId === deviceId) {
-        setState('connected');
+        setState("connected");
 
         onConnected?.();
       }
     });
 
     // 设备断开事件
-    const disconnected = UVCDeviceModule.onDeviceDisconnected(device => {
+    const disconnected = UVCDeviceModule.onDeviceDisconnected((device) => {
+      console.log("useDeviceEvent device disconnected:", device, deviceId);
       if (device.deviceId === deviceId) {
-        setState('disconnected');
+        setState("disconnected");
 
         onDisconnected?.();
       }
@@ -142,13 +153,18 @@ function useDeviceEvent(params: {
 
     // 设备权限被拒绝事件
     const permissionDenied = UVCDeviceModule.onDevicePermissionDenied(
-      device => {
+      (device) => {
+        console.log(
+          "useDeviceEvent device permission denied:",
+          device,
+          deviceId
+        );
         if (device.deviceId === deviceId) {
-          setState('permissionDenied');
+          setState("permissionDenied");
 
           onPermissionDenied?.();
         }
-      },
+      }
     );
 
     return () => {
@@ -167,7 +183,7 @@ function useDeviceEvent(params: {
     onPermissionDenied,
   ]);
 
-  return {state};
+  return { state };
 }
 
-export {TaskQueue, useDeviceEvent, useDevices};
+export { TaskQueue, useDeviceEvent, useDevices };

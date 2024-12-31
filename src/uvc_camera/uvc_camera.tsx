@@ -6,56 +6,83 @@ import {
   UIManager,
   StyleSheet,
   ToastAndroid,
-} from 'react-native';
-import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
-import {UVCDeviceModule} from './uvc_device_module';
-import {TaskQueue, useDevices} from './help';
-import {useDeviceEvent} from './help';
+} from "react-native";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { UVCDeviceModule } from "./uvc_device_module";
+import { TaskQueue, useDevices } from "./help";
+import { useDeviceEvent } from "./help";
 
 const isDev = __DEV__;
 
 const taskQueue = new TaskQueue();
 
-const ComponentName = 'UVCCameraView';
+const ComponentName = "UVCCameraView";
 const UVCCameraView = requireNativeComponent(ComponentName);
 const Commands = UIManager.getViewManagerConfig(ComponentName)?.Commands;
 
-const BaseUVCCamera = ({deviceId}: {deviceId: number}) => {
+const BaseUVCCamera = ({ deviceId }: { deviceId: number }) => {
   const viewRef = useRef<View>(null);
   const cameraViewRef = useRef(null);
 
-  const handleAttached = useCallback(async () => {
+  const doConnect = useCallback(async () => {
+    console.log("doConnect", deviceId);
     try {
       // 获取权限，排队执行
-      const isGranted = await taskQueue.addTask(() =>
-        UVCDeviceModule.requestPermission(deviceId),
-      );
+      const isGranted = (await taskQueue.addTask(() =>
+        UVCDeviceModule.requestPermission(deviceId)
+      )) as boolean;
+
+      console.log("isGranted", isGranted);
 
       // 权限请求成功后，设置设备ID，即可显示摄像头预览
       if (isGranted) {
         const node = findNodeHandle(cameraViewRef.current);
         if (node) {
-          ToastAndroid.show('设备已连接' + deviceId, ToastAndroid.SHORT);
+          console.log("setDeviceId", deviceId);
+          ToastAndroid.show("连接" + deviceId, ToastAndroid.SHORT);
           UIManager.dispatchViewManagerCommand(node, Commands.setDeviceId, [
             deviceId,
           ]);
         }
       }
     } catch (error) {
-      console.error('Failed to request device permission:', error);
+      console.error("Failed to request device permission:", error);
     }
   }, [deviceId]);
 
-  const {state} = useDeviceEvent({
+  const { state } = useDeviceEvent({
     deviceId,
-    onAttached: handleAttached,
   });
 
+  useEffect(() => {
+    console.log("state", state);
+
+    // 只要是没有链接，就重新链接。
+    // 比如 一开始 和 attached 后，需要重新链接
+    if (state === "" || state === "attached") {
+      doConnect();
+    }
+    // 比如 disconnected 后，需要重新链接
+    else if (state === "disconnected") {
+      doConnect();
+    }
+    // 比如 permissionDenied 后，需要重新链接
+    else if (state === "permissionDenied") {
+      doConnect();
+    }
+  }, [state, doConnect]);
+
   // 获取预览大小
-  const [viewSize, setViewSize] = useState({width: 0, height: 0});
+  const [viewSize, setViewSize] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
     viewRef.current?.measure((ox, oy, width, height) => {
-      setViewSize({width, height});
+      setViewSize({ width, height });
     });
   }, []);
 
@@ -64,14 +91,14 @@ const BaseUVCCamera = ({deviceId}: {deviceId: number}) => {
       <UVCCameraView
         ref={cameraViewRef}
         // @ts-ignore
-        style={{width: viewSize.width, height: viewSize.height}}
+        style={{ width: viewSize.width, height: viewSize.height }}
       />
       {isDev && <Text style={styles.rightTop}>{state}</Text>}
     </View>
   );
 };
 
-const UVCCamera = ({deviceId}: {deviceId?: number}) => {
+const UVCCamera = ({ deviceId }: { deviceId?: number }) => {
   return (
     <View style={styles.full}>
       {deviceId ? (
@@ -85,8 +112,8 @@ const UVCCamera = ({deviceId}: {deviceId?: number}) => {
 };
 
 /** 通过位置来调用，更便捷 */
-const UVCCameraWithIndex = ({index}: {index: number}) => {
-  const {devices} = useDevices();
+const UVCCameraWithIndex = ({ index }: { index: number }) => {
+  const { devices } = useDevices();
 
   return (
     <View style={styles.full}>
@@ -97,28 +124,28 @@ const UVCCameraWithIndex = ({index}: {index: number}) => {
 
 const styles = StyleSheet.create({
   full: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
   },
   text: {
-    color: 'white',
+    color: "white",
   },
   leftTop: {
-    position: 'absolute',
+    position: "absolute",
     left: 5,
     top: 5,
-    color: 'red',
+    color: "red",
   },
   rightTop: {
-    position: 'absolute',
+    position: "absolute",
     right: 5,
     top: 5,
-    color: 'red',
+    color: "red",
   },
 });
 
-export {UVCCamera, UVCCameraWithIndex};
+export { UVCCamera, UVCCameraWithIndex };

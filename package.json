@@ -1,10 +1,11 @@
 {
   "name": "@fe-free/react-native-uvc-camera",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib",
+    "src",
     "android",
     "ios",
     "react-native-uvc-camera.podspec"
